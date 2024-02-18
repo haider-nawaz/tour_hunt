@@ -9,14 +9,26 @@ import '../../Controllers/tour_controller.dart';
 import '../../auth/signin_view.dart';
 import '../../nav_controller.dart';
 
-class CompanyHome extends StatelessWidget {
+class CompanyHome extends StatefulWidget {
   const CompanyHome({super.key});
+
+  @override
+  State<CompanyHome> createState() => _CompanyHomeState();
+}
+
+class _CompanyHomeState extends State<CompanyHome> {
+  late final TourController tourController;
+  @override
+  void initState() {
+    tourController = Get.put(TourController());
+    tourController.getToursByCurrentUser();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final navController = Get.put(NavController());
-    final tourController = Get.put(TourController());
-    tourController.getToursByCurrentUser();
+
     return Obx(
       () => Scaffold(
         appBar: AppBar(

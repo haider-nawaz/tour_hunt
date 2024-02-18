@@ -36,6 +36,7 @@ class _TourWidgetState extends State<TourWidget> {
   void checkIfTourIsLiked() async {
     isLiked = await Get.find<TourController>()
         .checkIfTourIsLiked(widget.tourModel.id!);
+    setState(() {});
   }
 
   var showFeedback = false;

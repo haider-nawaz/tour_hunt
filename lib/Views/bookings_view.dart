@@ -6,15 +6,26 @@ import 'package:tour_hunt/Models/tour_model.dart';
 import '../Controllers/tour_controller.dart';
 import '../widgets/tour_widget.dart';
 
-class BookingsView extends StatelessWidget {
+class BookingsView extends StatefulWidget {
   const BookingsView({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final tourController = Get.put(TourController());
+  State<BookingsView> createState() => _BookingsViewState();
+}
+
+class _BookingsViewState extends State<BookingsView> {
+  late final TourController tourController;
+  @override
+  void initState() {
+    tourController = Get.put(TourController());
     tourController.getBookings();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [

@@ -51,11 +51,12 @@ class TourController extends GetxController {
       final data = snapshot.value;
       // print(data);
       (data as Map<dynamic, dynamic>).forEach((key, value) {
+        print("staus is ${value['status']}");
         if (Get.find<AuthController>().isTouristLoggedIn.value) {
           if (value['status'] == 'unarchive') {
             tours.add(
               TourModel(
-                arrangedByEmail: value['arrangedBy'],
+                arrangedByEmail: value['arrangeby'],
                 category: value['category'],
                 companyName: value['companyname'],
                 departureTime: value['departure'],
@@ -71,10 +72,10 @@ class TourController extends GetxController {
             );
           }
         } else {
-          if (value['arrangedBy'] == user!.email) {
+          if (value['arrangeby'] == user!.email) {
             tours.add(
               TourModel(
-                arrangedByEmail: value['arrangedBy'],
+                arrangedByEmail: value['arrangeby'],
                 category: value['category'],
                 companyName: value['companyname'],
                 departureTime: value['departure'],
@@ -248,6 +249,7 @@ class TourController extends GetxController {
   }
 
   void getLikedTours() async {
+    likedIds.clear();
     //get the current bookings of current user
     //add them to the bookings list
 
@@ -350,6 +352,7 @@ class TourController extends GetxController {
   }
 
   void getToursByCurrentUser() async {
+    print("called get tours by ${user!.email}");
     isLoading.value = true;
 
     tours.clear();
@@ -360,10 +363,11 @@ class TourController extends GetxController {
       final data = snapshot.value;
       // print(data);
       (data as Map<dynamic, dynamic>).forEach((key, value) {
-        if (value['arrangedBy'] == user!.email) {
+        print("value['arrangeBy'] is ${value['arrangedBy']}");
+        if (value['arrangeby'] == user!.email) {
           tours.add(
             TourModel(
-              arrangedByEmail: value['arrangedBy'],
+              arrangedByEmail: value['arrangeby'],
               category: value['category'],
               companyName: value['companyname'],
               departureTime: value['departure'],
@@ -379,6 +383,8 @@ class TourController extends GetxController {
           );
         }
       });
+
+      print("len of tours is ${tours.length}");
       getBookings();
 
       isLoading.value = false;
@@ -486,20 +492,22 @@ class TourController extends GetxController {
 
   void updateLike(String s, bool isLiked) async {
     if (isLiked) {
+      likedIds.add(s);
       print("liked");
       await ref.child('favourites').push().set({
         "tour_id": s,
         "user_email": user!.email,
       }).then((value) {
-        if (isLiked) {
-          likedIds.add(s);
-        } else {
-          likedIds.remove(s);
-        }
+        // if (isLiked) {
+        //   likedIds.add(s);
+        // } else {
+        //   likedIds.remove(s);
+        // }
       }).catchError((onError) {
         print(onError.toString());
       });
     } else {
+      likedIds.remove(s);
       print("unliked");
       await ref.child('favourites').get().then((snapshot) {
         if (snapshot.exists) {
@@ -507,11 +515,11 @@ class TourController extends GetxController {
           (data as Map<dynamic, dynamic>).forEach((key, value) {
             if (value['tour_id'] == s && value['user_email'] == user!.email) {
               ref.child('favourites/$key').remove().then((value) {
-                if (isLiked) {
-                  likedIds.add(s);
-                } else {
-                  likedIds.remove(s);
-                }
+                // if (isLiked) {
+                //   likedIds.add(s);
+                // } else {
+                //   likedIds.remove(s);
+                // }
               }).catchError((onError) {
                 print(onError.toString());
               });
@@ -523,6 +531,7 @@ class TourController extends GetxController {
   }
 
   checkIfTourIsLiked(String s) {
+    print("Tour likes: ${likedIds.contains(s)}");
     return likedIds.contains(s);
   }
 }

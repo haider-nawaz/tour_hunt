@@ -4,13 +4,25 @@ import 'package:tour_hunt/Controllers/tour_controller.dart';
 import 'package:tour_hunt/Models/tour_model.dart';
 import 'package:tour_hunt/widgets/tour_widget.dart';
 
-class LikedToursView extends StatelessWidget {
+class LikedToursView extends StatefulWidget {
   const LikedToursView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final tourController = Get.put(TourController());
+  State<LikedToursView> createState() => _LikedToursViewState();
+}
+
+class _LikedToursViewState extends State<LikedToursView> {
+  late final TourController tourController;
+
+  @override
+  void initState() {
+    tourController = Get.put(TourController());
     tourController.getLikedTours();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [

@@ -11,14 +11,27 @@ import '../Controllers/tour_controller.dart';
 import '../nav_controller.dart';
 import 'bookings_view.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  late final TourController tourController;
+
+  @override
+  void initState() {
+    tourController = Get.put(TourController());
+    tourController.getTours();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final navController = Get.put(NavController());
-    final tourController = Get.put(TourController());
-    tourController.getTours();
+
     return Obx(
       () => Scaffold(
         // floatingActionButton: FloatingActionButton(
