@@ -31,6 +31,10 @@ class TourController extends GetxController {
   final companyController = TextEditingController();
   final priceController = TextEditingController();
   final feedBackController = TextEditingController();
+  final transportatinoController = TextEditingController();
+  final hotelController = TextEditingController();
+  final arrivalTimeController = TextEditingController();
+  final departureTimeController = TextEditingController();
   final ref = FirebaseDatabase.instance.ref();
   final user = FirebaseAuth.instance.currentUser;
 
@@ -67,6 +71,10 @@ class TourController extends GetxController {
                 location: value['location'],
                 price: value['price'],
                 status: value['status'],
+                departureTimeNew: value['departureTime'],
+                arrivalTime: value['arrivalTime'],
+                hotel: value['hotel'],
+                transportation: value['transportation'],
                 id: key,
               ),
             );
@@ -86,6 +94,10 @@ class TourController extends GetxController {
                 location: value['location'],
                 price: value['price'],
                 status: value['status'],
+                departureTimeNew: value['departureTime'],
+                arrivalTime: value['arrivalTime'],
+                hotel: value['hotel'],
+                transportation: value['transportation'],
                 id: key,
               ),
             );
@@ -156,8 +168,12 @@ class TourController extends GetxController {
     descriptionController.clear();
     categoryController.clear();
     departureFromController.clear();
-    companyController.clear();
+    //companyController.clear();
     priceController.clear();
+    transportatinoController.clear();
+    hotelController.clear();
+    arrivalTimeController.clear();
+    departureTimeController.clear();
     arrivalController.text = "Select Arrival";
     departureController.text = "Select Departure";
   }
@@ -178,6 +194,10 @@ class TourController extends GetxController {
         location: locationController.text,
         price: priceController.text,
         status: "new",
+        departureTimeNew: departureTimeController.text,
+        arrivalTime: arrivalTimeController.text,
+        hotel: hotelController.text,
+        transportation: transportatinoController.text,
       );
       await tourRef.set(tour.toJson()).then((value) {
         tours.add(tour);
@@ -225,6 +245,7 @@ class TourController extends GetxController {
   }
 
   void getBookings() async {
+    isLoading.value = true;
     //get the current bookings of current user
     //add them to the bookings list
 
@@ -240,6 +261,7 @@ class TourController extends GetxController {
       });
 
       print(bookingIds);
+      isLoading.value = false;
     } else {
       print('No data available.');
     }
@@ -249,6 +271,7 @@ class TourController extends GetxController {
   }
 
   void getLikedTours() async {
+    isLoading.value = true;
     likedIds.clear();
     //get the current bookings of current user
     //add them to the bookings list
@@ -265,6 +288,8 @@ class TourController extends GetxController {
       });
 
       print(likedIds);
+
+      isLoading.value = false;
     } else {
       print('No data available.');
     }
@@ -306,6 +331,10 @@ class TourController extends GetxController {
     departureFromController.text = tours[index].departureFrom!;
     companyController.text = tours[index].companyName!;
     priceController.text = tours[index].price!;
+    transportatinoController.text = tours[index].transportation!;
+    hotelController.text = tours[index].hotel!;
+    arrivalTimeController.text = tours[index].arrivalTime!;
+    departureTimeController.text = tours[index].departureTimeNew!;
   }
 
   editTour(
@@ -326,6 +355,10 @@ class TourController extends GetxController {
       location: locationController.text,
       price: priceController.text,
       status: "new",
+      departureTimeNew: departureTimeController.text,
+      arrivalTime: arrivalTimeController.text,
+      hotel: hotelController.text,
+      transportation: transportatinoController.text,
     );
     await tourRef.set(tour.toJson()).then((value) {
       customSnack("Tour Updated Successfully", false, "Success");
@@ -379,6 +412,10 @@ class TourController extends GetxController {
               price: value['price'],
               status: value['status'],
               id: key,
+              departureTimeNew: value['departureTime'],
+              arrivalTime: value['arrivalTime'],
+              hotel: value['hotel'],
+              transportation: value['transportation'],
             ),
           );
         }
@@ -533,5 +570,80 @@ class TourController extends GetxController {
   checkIfTourIsLiked(String s) {
     print("Tour likes: ${likedIds.contains(s)}");
     return likedIds.contains(s);
+  }
+
+  Future<void> updateRating(String id, double rating) async {
+    //update the rating of the tour with given id, if not present then add a new rating
+    final snapshot = await ref.child('ratings_feedbacks').get();
+    bool isPresent = false;
+    String key = "";
+    if (snapshot.exists) {
+      final data = snapshot.value;
+      (data as Map<dynamic, dynamic>).forEach((k, value) {
+        if (value['tour_id'] == id && value['user_email'] == user!.email) {
+          isPresent = true;
+          key = k;
+        }
+      });
+    } else {
+      print('No data available.');
+    }
+
+    if (isPresent) {
+      await ref.child('ratings_feedbacks/$key').update({
+        "rating": rating,
+      }).then((value) {
+        print("Rating Updated Successfully");
+        Get.snackbar(
+          "Success",
+          "Rating Updated Successfully",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      }).catchError((onError) {
+        print(onError.toString());
+      });
+    } else {
+      await ref.child('ratings_feedbacks').push().set({
+        "tour_id": id,
+        "rating": rating,
+        "user_email": user!.email,
+      }).then((value) {
+        Get.snackbar(
+          "Success",
+          "Rating Updated Successfully",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        print("Rating Added Successfully");
+      }).catchError((onError) {
+        print(onError.toString());
+      });
+    }
+  }
+
+  Future<double> getTourRating(String tourId) async {
+    final snapshot = await ref.child('ratings_feedbacks').get();
+    double initalRating = 0;
+
+    try {
+      if (snapshot.exists) {
+        final data = snapshot.value;
+        // print(data);
+        (data as Map<dynamic, dynamic>).forEach((key, value) {
+          if (value['tour_id'] == tourId) {
+            initalRating = double.parse(value['rating'].toString());
+          }
+        });
+      } else {
+        print('No data available.');
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return initalRating;
   }
 }

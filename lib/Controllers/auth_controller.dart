@@ -40,6 +40,19 @@ class AuthController extends GetxController {
 
   //a list that will hold the current logged in user
 
+  //dispose method
+  @override
+  void onClose() {
+    emailController.dispose();
+    passController.dispose();
+    phoneController.dispose();
+    dobController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    addressController.dispose();
+    super.onClose();
+  }
+
   void prep() {
     sendVerificationEmail();
     print("verfication started");
@@ -200,7 +213,7 @@ class AuthController extends GetxController {
     isLoading.value = true;
 
     DatabaseReference ref = isCompany
-        ? FirebaseDatabase.instance.ref("newregisterations")
+        ? FirebaseDatabase.instance.ref("companies")
         : FirebaseDatabase.instance.ref("tourists");
 
     await FirebaseAuth.instance

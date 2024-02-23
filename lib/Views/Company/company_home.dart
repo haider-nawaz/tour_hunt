@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tour_hunt/Views/add_tours_view.dart';
 import 'package:tour_hunt/Views/tours_view.dart';
+import 'package:tour_hunt/auth/signup_view.dart';
 
 import '../../Controllers/tour_controller.dart';
 import '../../auth/signin_view.dart';
@@ -132,8 +133,12 @@ class _CompanyHomeState extends State<CompanyHome> {
                                 child: const Text("No")),
                             TextButton(
                                 onPressed: () async {
-                                  await FirebaseAuth.instance.signOut();
-                                  Get.offAll(() => const SignInView());
+                                  await FirebaseAuth.instance
+                                      .signOut()
+                                      .then((value) {
+                                    Get.deleteAll();
+                                    Get.offAll(() => const SignupView());
+                                  });
                                 },
                                 child: const Text("Yes"))
                           ],

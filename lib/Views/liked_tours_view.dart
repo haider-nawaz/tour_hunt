@@ -24,26 +24,30 @@ class _LikedToursViewState extends State<LikedToursView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          //const SizedBox(height: 15),
-          Expanded(
-            child: ListView.builder(
-              itemCount: tourController.likedTours.length,
-              itemBuilder: (context, index) {
-                final tour = tourController.likedTours[index];
-                return Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: TourWidget(
-                    tourModel: tour,
-                    index: index,
-                    isBooked: false,
+      body: Obx(
+        () => tourController.isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  //const SizedBox(height: 15),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: tourController.likedTours.length,
+                      itemBuilder: (context, index) {
+                        final tour = tourController.likedTours[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: TourWidget(
+                            tourModel: tour,
+                            index: index,
+                            isBooked: false,
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                );
-              },
-            ),
-          ),
-        ],
+                ],
+              ),
       ),
     );
   }

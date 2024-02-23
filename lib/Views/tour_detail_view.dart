@@ -89,7 +89,7 @@ class TourDetailView extends StatelessWidget {
                                 ],
                               ),
                               Text(
-                                "${convertTimetoDays(tourModel.departureTime.toString())} - ${tourModel.departureFrom ?? ""}",
+                                "${convertTimetoDays(tourModel.departureTime.toString())} at ${tourModel.departureTimeNew.toString()} - ${tourModel.departureFrom ?? ""}",
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -98,27 +98,28 @@ class TourDetailView extends StatelessWidget {
                             ],
                           ),
                           const Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
                             children: [
-                              const Row(
-                                children: [
-                                  Text(
-                                    "Arrival",
-                                    style: TextStyle(color: Colors.blue),
-                                  )
-                                ],
-                              ),
                               Text(
-                                convertTimetoDays(
-                                  tourModel.arrival.toString(),
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                                "Arrival",
+                                style: TextStyle(color: Colors.blue),
+                              )
                             ],
+                          ),
+                          Text(
+                            "${convertTimetoDays(
+                              tourModel.arrival.toString(),
+                            )} at ${tourModel.arrivalTime.toString()}",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),

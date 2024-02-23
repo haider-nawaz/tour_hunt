@@ -13,6 +13,10 @@ class TourModel {
   String? price;
   String? status;
   String? id;
+  String? arrivalTime;
+  String? departureTimeNew;
+  String? hotel;
+  String? transportation;
 
   TourModel({
     required this.arrangedByEmail,
@@ -26,6 +30,10 @@ class TourModel {
     required this.location,
     required this.price,
     required this.status,
+    required this.arrivalTime,
+    required this.departureTimeNew,
+    required this.hotel,
+    required this.transportation,
     this.id,
   });
 
@@ -34,7 +42,7 @@ class TourModel {
       arrangedByEmail: json['arrangedByEmail'],
       category: json['category'],
       companyName: json['companyname'],
-      departureTime: json['departureTime'],
+      departureTime: json['departure'],
       arrival: json['arrival'],
       description: json['description'],
       departureFrom: json['departureFrom'],
@@ -42,6 +50,10 @@ class TourModel {
       location: json['location'],
       price: json['price'],
       status: json['status'],
+      arrivalTime: json['arrivalTime'],
+      departureTimeNew: json['departureTime'],
+      hotel: json['hotel'],
+      transportation: json['transportation'],
       id: '',
     );
   }
@@ -58,6 +70,10 @@ class TourModel {
         'location': location,
         'price': price,
         'status': status,
+        'arrivalTime': arrivalTime,
+        'departureTime': departureTimeNew,
+        'hotel': hotel,
+        'transportation': transportation,
       };
 
   //from map

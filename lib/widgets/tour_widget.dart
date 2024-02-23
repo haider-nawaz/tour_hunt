@@ -1,3 +1,4 @@
+import 'package:animated_rating_stars/animated_rating_stars.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,8 +31,19 @@ class _TourWidgetState extends State<TourWidget> {
   final isFeedbackGiven = false;
   var feedbacks = <Map<String, String>>[];
   var feedback = "";
+  double rating = 0.0;
 
   bool isLiked = false;
+
+  void getTourRating() async {
+    rating =
+        await Get.find<TourController>().getTourRating(widget.tourModel.id!);
+    setState(() {});
+  }
+
+  void updateRating(double rate) {
+    Get.find<TourController>().updateRating(widget.tourModel.id!, rate);
+  }
 
   void checkIfTourIsLiked() async {
     isLiked = await Get.find<TourController>()
@@ -62,6 +74,7 @@ class _TourWidgetState extends State<TourWidget> {
   void initState() {
     checkIfTourIsLiked();
     checkForAnyFeedback();
+    getTourRating();
     super.initState();
   }
 
@@ -148,53 +161,12 @@ class _TourWidgetState extends State<TourWidget> {
               ),
             ),
             trailing: widget.isBooked!
-                ? ElevatedButton(
-                    onPressed: () {
-                      if (feedback.isEmpty) {
-                        //show a dialog with a textfield to enter feedback and a button to submit
-                        Get.defaultDialog(
-                          contentPadding: const EdgeInsets.all(40),
-                          title: "Feedback",
-                          content: TextField(
-                            controller:
-                                Get.find<TourController>().feedBackController,
-                            onChanged: (value) {
-                              feedback = value;
-                            },
-                            decoration: const InputDecoration(
-                              hintText: "Enter your feedback here",
-                            ),
-                          ),
-                          textConfirm: "Submit",
-                          textCancel: "Cancel",
-                          onConfirm: () {
-                            feedback = feedback.trim();
-
-                            setState(() {
-                              //add the feedback to the feedbacks list
-                              feedbacks.add({
-                                "user_email":
-                                    FirebaseAuth.instance.currentUser!.email!,
-                                "description": feedback,
-                              });
-                              showFeedback = true;
-                            });
-                            Get.find<TourController>()
-                                .saveFeedbackOnTour(widget.tourModel.id!);
-                            Get.back();
-                          },
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          feedback.isNotEmpty ? Colors.grey : Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text("Give Feedback",
-                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                ? Column(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisSize: MainAxisSize.min,
+                    children: [
+                      giveFeedbackBtn(),
+                    ],
                   )
                 : Column(
                     // mainAxisSize: MainAxisSize.min,
@@ -337,31 +309,123 @@ class _TourWidgetState extends State<TourWidget> {
             ),
           ],
           if (widget.isBooked == true)
-            if (showFeedback)
-              Container(
-                //height: 80,
-                width: double.infinity,
-                color: Colors.transparent.withOpacity(.1),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                      // a listview of feedbacks
-                      ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: feedbacks.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        // leading: const Icon(Icons.feedback),
-                        title: Text(feedbacks[index]['user_email'] ?? "N/A"),
-                        subtitle:
-                            Text(feedbacks[index]['description'] ?? "N/A"),
-                      );
-                    },
+            if (showFeedback) ...[
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    width: double.infinity,
+                    color: Colors.transparent.withOpacity(.2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Rate this tour",
+                          style: TextStyle(fontSize: 16, color: Colors.black87),
+                        ),
+                        AnimatedRatingStars(
+                          initialRating: rating,
+                          minRating: 0.0,
+                          maxRating: 5.0,
+                          filledColor: Colors.amber,
+                          emptyColor: Colors.grey,
+                          filledIcon: Icons.star,
+                          halfFilledIcon: Icons.star_half,
+                          emptyIcon: Icons.star_border,
+                          onChanged: (double rating) {
+                            // Handle the rating change here
+                            print('Rating: $rating');
+                            updateRating(rating);
+                          },
+                          displayRatingValue: true,
+                          interactiveTooltips: true,
+                          customFilledIcon: Icons.star,
+                          customHalfFilledIcon: Icons.star_half,
+                          customEmptyIcon: Icons.star_border,
+                          starSize: 20.0,
+                          animationDuration: const Duration(milliseconds: 300),
+                          animationCurve: Curves.easeInOut,
+                          readOnly: false,
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              )
+                  Container(
+                    //height: 80,
+                    width: double.infinity,
+                    color: Colors.transparent.withOpacity(.1),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child:
+                          // a listview of feedbacks
+                          ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: feedbacks.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            // leading: const Icon(Icons.feedback),
+                            title:
+                                Text(feedbacks[index]['user_email'] ?? "N/A"),
+                            subtitle:
+                                Text(feedbacks[index]['description'] ?? "N/A"),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
         ],
       ),
+    );
+  }
+
+  ElevatedButton giveFeedbackBtn() {
+    return ElevatedButton(
+      onPressed: () {
+        if (feedback.isEmpty) {
+          //show a dialog with a textfield to enter feedback and a button to submit
+          Get.defaultDialog(
+            contentPadding: const EdgeInsets.all(40),
+            title: "Feedback",
+            content: TextField(
+              controller: Get.find<TourController>().feedBackController,
+              onChanged: (value) {
+                feedback = value;
+              },
+              decoration: const InputDecoration(
+                hintText: "Enter your feedback here",
+              ),
+            ),
+            textConfirm: "Submit",
+            textCancel: "Cancel",
+            onConfirm: () {
+              feedback = feedback.trim();
+
+              setState(() {
+                //add the feedback to the feedbacks list
+                feedbacks.add({
+                  "user_email": FirebaseAuth.instance.currentUser!.email!,
+                  "description": feedback,
+                });
+                showFeedback = true;
+              });
+              Get.find<TourController>()
+                  .saveFeedbackOnTour(widget.tourModel.id!);
+              Get.back();
+            },
+          );
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: feedback.isNotEmpty ? Colors.grey : Colors.blue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+      ),
+      child: const Text("Give Feedback",
+          style: TextStyle(fontSize: 14, color: Colors.white)),
     );
   }
 

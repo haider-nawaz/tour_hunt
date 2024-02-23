@@ -19,6 +19,7 @@ class ToursView extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(AuthController());
     return Scaffold(
+      //backgroundColor: Colors.transparent,
       body: Column(
         children: [
           //const SizedBox(height: 15),

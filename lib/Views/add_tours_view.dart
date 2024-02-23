@@ -114,12 +114,25 @@ class _AddTourViewState extends State<AddTourView> {
                                       ).then((value) {
                                         departure = DateUtils.dateOnly(value!);
                                         print("Departure is $departure");
+
                                         setState(() {
                                           tourController
                                                   .departureController.text =
                                               DateFormat('yMMMEd')
                                                   .format(value)
                                                   .toString();
+                                        });
+
+                                        //show time picker for departure
+                                        showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.now(),
+                                        ).then((value) {
+                                          setState(() {
+                                            tourController
+                                                .departureTimeController
+                                                .text = value!.format(context);
+                                          });
                                         });
                                       });
                                     },
@@ -132,9 +145,30 @@ class _AddTourViewState extends State<AddTourView> {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Center(
-                                          child: Text(tourController
-                                              .departureController.text
-                                              .toString())),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                " ${tourController.departureController.text}"),
+                                            tourController
+                                                    .departureTimeController
+                                                    .text
+                                                    .isNotEmpty
+                                                ? Text(
+                                                    tourController
+                                                        .departureTimeController
+                                                        .text,
+                                                    style: const TextStyle(
+                                                      color: Colors.black54,
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -192,6 +226,17 @@ class _AddTourViewState extends State<AddTourView> {
                                                   .format(value)
                                                   .toString();
                                         });
+
+                                        //show time picker for arrival
+                                        showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.now(),
+                                        ).then((value) {
+                                          setState(() {
+                                            tourController.arrivalTimeController
+                                                .text = value!.format(context);
+                                          });
+                                        });
                                       });
                                     },
                                     child: Container(
@@ -203,9 +248,29 @@ class _AddTourViewState extends State<AddTourView> {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Center(
-                                        child: Text(
-                                          tourController.arrivalController.text
-                                              .toString(),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              tourController
+                                                  .arrivalController.text
+                                                  .toString(),
+                                            ),
+                                            tourController.arrivalTimeController
+                                                    .text.isNotEmpty
+                                                ? Text(
+                                                    tourController
+                                                        .arrivalTimeController
+                                                        .text,
+                                                    style: const TextStyle(
+                                                      color: Colors.black54,
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -252,6 +317,28 @@ class _AddTourViewState extends State<AddTourView> {
                           height: 20,
                         ),
                         //a drop down menu for the tour type
+                        CustomTextField(
+                          true,
+                          obscureText: false,
+                          keyboardType: TextInputType.multiline,
+                          controller: tourController.hotelController,
+                          icon: Icons.abc,
+                          title: "Hotel Accomodation",
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextField(
+                          true,
+                          obscureText: false,
+                          keyboardType: TextInputType.multiline,
+                          controller: tourController.transportatinoController,
+                          icon: Icons.abc,
+                          title: "Transportation",
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         const Text(
                           "Tour Type",
                           style: TextStyle(
