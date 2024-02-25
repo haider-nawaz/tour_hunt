@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:tour_hunt/Controllers/auth_controller.dart';
 import 'package:tour_hunt/Models/tour_model.dart';
@@ -437,16 +437,16 @@ class TourController extends GetxController {
       paymentIntent = await createPaymentIntent(amount, 'PKR');
 
       //STEP 2: Initialize Payment Sheet
-      await Stripe.instance
-          .initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-                  paymentIntentClientSecret: paymentIntent![
-                      'client_secret'], //Gotten from payment intent
-                  style: ThemeMode.light,
-                  merchantDisplayName: 'Ikay'))
-          .then((value) {
-        print('Payment Sheet Initialized');
-      });
+      // await Stripe.instance
+      //     .initPaymentSheet(
+      //         paymentSheetParameters: SetupPaymentSheetParameters(
+      //             paymentIntentClientSecret: paymentIntent![
+      //                 'client_secret'], //Gotten from payment intent
+      //             style: ThemeMode.light,
+      //             merchantDisplayName: 'Ikay'))
+      //     .then((value) {
+      //   print('Payment Sheet Initialized');
+      // });
 
       //STEP 3: Display Payment sheet
       displayPaymentSheet(tourModel);
@@ -485,21 +485,21 @@ class TourController extends GetxController {
   }
 
   displayPaymentSheet(TourModel tourModel) async {
-    try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
-        print("Payment Sheet Completed");
-        //Clear paymentIntent variable after successful payment
-        saveBooking(tourModel);
+    // try {
+    //   await Stripe.instance.presentPaymentSheet().then((value) {
+    //     print("Payment Sheet Completed");
+    //     //Clear paymentIntent variable after successful payment
+    //     saveBooking(tourModel);
 
-        paymentIntent = null;
-      }).onError((error, stackTrace) {
-        throw Exception(error);
-      });
-    } on StripeException catch (e) {
-      print('Error is:---> $e');
-    } catch (e) {
-      print('$e');
-    }
+    //     paymentIntent = null;
+    //   }).onError((error, stackTrace) {
+    //     throw Exception(error);
+    //   });
+    // } on StripeException catch (e) {
+    //   print('Error is:---> $e');
+    // } catch (e) {
+    //   print('$e');
+    // }
   }
 
   Future<List<Map<String, String>>> checkForFeedback(String tourId) async {
