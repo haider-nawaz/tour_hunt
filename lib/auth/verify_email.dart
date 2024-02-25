@@ -52,7 +52,7 @@ class VerifyEmailScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: authController.isEmailVerified.value
                         ? Colors.blue
-                        : Colors.grey,
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   height: 60,

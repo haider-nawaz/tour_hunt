@@ -108,7 +108,7 @@ class _TourWidgetState extends State<TourWidget> {
                   },
                   icon: Icon(
                     isLiked ? Icons.favorite : Icons.favorite_border,
-                    color: isLiked ? Colors.red : Colors.grey,
+                    color: isLiked ? Colors.red : Colors.white,
                   ),
                 )
               ],
@@ -328,7 +328,7 @@ class _TourWidgetState extends State<TourWidget> {
                           minRating: 0.0,
                           maxRating: 5.0,
                           filledColor: Colors.amber,
-                          emptyColor: Colors.grey,
+                          emptyColor: Colors.white,
                           filledIcon: Icons.star,
                           halfFilledIcon: Icons.star_half,
                           emptyIcon: Icons.star_border,
@@ -419,7 +419,7 @@ class _TourWidgetState extends State<TourWidget> {
         }
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: feedback.isNotEmpty ? Colors.grey : Colors.blue,
+        backgroundColor: feedback.isNotEmpty ? Colors.white : Colors.blue,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),

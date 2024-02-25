@@ -12,7 +12,9 @@ class TourDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(tourModel.location ?? "Tour Detail"),
       ),
       body: Padding(

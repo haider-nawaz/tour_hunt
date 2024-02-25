@@ -28,6 +28,7 @@ class _BookingsViewState extends State<BookingsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Obx(
         () => tourController.isLoading.value
             ? const Center(child: CircularProgressIndicator())

@@ -32,7 +32,9 @@ class _CompanyHomeState extends State<CompanyHome> {
 
     return Obx(
       () => Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
           iconTheme: const IconThemeData(color: Colors.blue),
           title: Text(
             navController.currentIndex.value == 0

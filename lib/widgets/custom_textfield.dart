@@ -29,15 +29,16 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      // cursorColor: Colors.grey,
+      // cursorColor: Colors.white,
       decoration: InputDecoration(
+        fillColor: Colors.white.withOpacity(0.4),
         prefixIcon: Icon(
           icon,
-          // color: Colors.grey,
+          // color: Colors.white,
         ),
         labelText: title,
         //border: OutlineInputBorder(),
-        //fillColor: Colors.grey,
+        //fillColor: Colors.white,
         filled: true,
         //labelStyle: const TextStyle(color: Colors.black45),
 
@@ -50,7 +51,7 @@ class CustomTextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
           borderSide: const BorderSide(
-            color: Colors.grey,
+            color: Colors.white,
           ),
         ),
       ),

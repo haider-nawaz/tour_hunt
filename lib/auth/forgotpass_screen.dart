@@ -12,9 +12,11 @@ class ForgotPassScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authController = Get.put(AuthController());
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text("Forgot Password"),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

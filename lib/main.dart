@@ -27,7 +27,17 @@ class MyApp extends StatelessWidget {
     //FirebaseAuth.instance.signOut();d
     final user = FirebaseAuth.instance.currentUser;
     //final emailVerified = user?.emailVerified ?? false;
-    return GetMaterialApp(
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          opacity: .9,
+          fit: BoxFit.cover,
+          image: AssetImage(
+            "assets/background.jpg",
+          ),
+        ),
+      ),
+      child: GetMaterialApp(
         title: 'Tour Hunt',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -35,6 +45,8 @@ class MyApp extends StatelessWidget {
         ),
 
         //home: SplashScreen(),
-        home: user == null ? const SignInView() : const CompanyHome());
+        home: user == null ? const SignInView() : const CompanyHome(),
+      ),
+    );
   }
 }

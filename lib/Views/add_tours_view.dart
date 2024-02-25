@@ -31,7 +31,8 @@ class _AddTourViewState extends State<AddTourView> {
   Widget build(BuildContext context) {
     final tourController = Get.find<TourController>();
     return Scaffold(
-        appBar: AppBar(),
+        backgroundColor: Colors.transparent.withOpacity(0),
+        // appBar: AppBar(),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -47,7 +48,9 @@ class _AddTourViewState extends State<AddTourView> {
                         Text(
                           widget.edit ? "Edit Tour Details" : "Add a Tour",
                           style: const TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
                         ),
                         Text(
                           widget.edit
@@ -56,7 +59,7 @@ class _AddTourViewState extends State<AddTourView> {
                           style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: Colors.grey),
+                              color: Colors.black),
                         ),
                       ],
                     ),
@@ -96,7 +99,7 @@ class _AddTourViewState extends State<AddTourView> {
                                   const Text(
                                     "Departure",
                                     style: TextStyle(
-                                      color: Colors.black54,
+                                      color: Colors.white,
                                     ),
                                   ),
                                   const SizedBox(
@@ -140,7 +143,7 @@ class _AddTourViewState extends State<AddTourView> {
                                       height: 60,
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          color: Colors.black,
+                                          color: Colors.white,
                                         ),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
@@ -152,7 +155,11 @@ class _AddTourViewState extends State<AddTourView> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                                " ${tourController.departureController.text}"),
+                                              " ${tourController.departureController.text}",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                             tourController
                                                     .departureTimeController
                                                     .text
@@ -162,7 +169,7 @@ class _AddTourViewState extends State<AddTourView> {
                                                         .departureTimeController
                                                         .text,
                                                     style: const TextStyle(
-                                                      color: Colors.black54,
+                                                      color: Colors.white,
                                                     ),
                                                   )
                                                 : const SizedBox(),
@@ -185,7 +192,7 @@ class _AddTourViewState extends State<AddTourView> {
                                   const Text(
                                     "Arrival",
                                     style: TextStyle(
-                                      color: Colors.black54,
+                                      color: Colors.white,
                                     ),
                                   ),
                                   const SizedBox(
@@ -243,7 +250,7 @@ class _AddTourViewState extends State<AddTourView> {
                                       height: 60,
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          color: Colors.black,
+                                          color: Colors.white,
                                         ),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
@@ -258,6 +265,10 @@ class _AddTourViewState extends State<AddTourView> {
                                               tourController
                                                   .arrivalController.text
                                                   .toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                             tourController.arrivalTimeController
                                                     .text.isNotEmpty
@@ -266,7 +277,7 @@ class _AddTourViewState extends State<AddTourView> {
                                                         .arrivalTimeController
                                                         .text,
                                                     style: const TextStyle(
-                                                      color: Colors.black54,
+                                                      color: Colors.white,
                                                     ),
                                                   )
                                                 : const SizedBox(),
@@ -342,7 +353,7 @@ class _AddTourViewState extends State<AddTourView> {
                         const Text(
                           "Tour Type",
                           style: TextStyle(
-                            color: Colors.black54,
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(
@@ -352,7 +363,7 @@ class _AddTourViewState extends State<AddTourView> {
                           height: 60,
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: Colors.black,
+                              color: Colors.white,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -367,7 +378,7 @@ class _AddTourViewState extends State<AddTourView> {
                                 icon: const Icon(Icons.arrow_drop_down),
                                 iconSize: 24,
                                 elevation: 16,
-                                style: const TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.white),
                                 onChanged: (String? newValue) {
                                   tourController.selectedCategory(newValue!);
                                 },
@@ -378,7 +389,7 @@ class _AddTourViewState extends State<AddTourView> {
                                     value: value,
                                     child: Text(value,
                                         style: const TextStyle(
-                                            color: Colors.black)),
+                                            color: Colors.white)),
                                   );
                                 }).toList(),
                               ),

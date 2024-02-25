@@ -35,6 +35,7 @@ class _HomeViewState extends State<HomeView> {
 
     return Obx(
       () => Scaffold(
+          backgroundColor: Colors.transparent,
           // floatingActionButton: FloatingActionButton(
           //   onPressed: () {
           //     Get.to(() => const AddTourView());
@@ -43,6 +44,7 @@ class _HomeViewState extends State<HomeView> {
           // ),
           extendBodyBehindAppBar: true,
           appBar: AppBar(
+            backgroundColor: Colors.transparent,
             elevation: 0,
             iconTheme: const IconThemeData(color: Colors.blue),
             title: Text(
