@@ -33,7 +33,20 @@ class _TourWidgetState extends State<TourWidget> {
   var feedback = "";
   double rating = 0.0;
 
+  bool isFeedbackAlreadyGiven = true;
+
   bool isLiked = false;
+
+  //check if the current user has already given feedback
+  void checkIfFeedbackGiven() async {
+    isFeedbackAlreadyGiven = await Get.find<TourController>()
+        .checkIfFeedbackGiven(widget.tourModel.id!);
+    setState(() {
+      isFeedbackAlreadyGiven = isFeedbackAlreadyGiven;
+    });
+
+    print("Feedback already given: $isFeedbackAlreadyGiven");
+  }
 
   void getTourRating() async {
     rating =
@@ -75,6 +88,7 @@ class _TourWidgetState extends State<TourWidget> {
     checkIfTourIsLiked();
     checkForAnyFeedback();
     getTourRating();
+    checkIfFeedbackGiven();
     super.initState();
   }
 
@@ -108,7 +122,7 @@ class _TourWidgetState extends State<TourWidget> {
                   },
                   icon: Icon(
                     isLiked ? Icons.favorite : Icons.favorite_border,
-                    color: isLiked ? Colors.red : Colors.white,
+                    color: isLiked ? Colors.red : Colors.red,
                   ),
                 )
               ],
@@ -165,7 +179,9 @@ class _TourWidgetState extends State<TourWidget> {
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     // mainAxisSize: MainAxisSize.min,
                     children: [
-                      giveFeedbackBtn(),
+                      isFeedbackAlreadyGiven
+                          ? const SizedBox()
+                          : giveFeedbackBtn(),
                     ],
                   )
                 : Column(
@@ -419,13 +435,18 @@ class _TourWidgetState extends State<TourWidget> {
         }
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: feedback.isNotEmpty ? Colors.white : Colors.blue,
+        backgroundColor: isFeedbackAlreadyGiven ? Colors.grey : Colors.blue,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
       ),
-      child: const Text("Give Feedback",
-          style: TextStyle(fontSize: 14, color: Colors.white)),
+      child: Text(
+        "Give Feedback",
+        style: TextStyle(
+          fontSize: 14,
+          color: isFeedbackAlreadyGiven ? Colors.black : Colors.white,
+        ),
+      ),
     );
   }
 

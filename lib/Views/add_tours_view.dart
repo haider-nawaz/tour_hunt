@@ -265,7 +265,7 @@ class _AddTourViewState extends State<AddTourView> {
                                               tourController
                                                   .arrivalController.text
                                                   .toString(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -372,13 +372,19 @@ class _AddTourViewState extends State<AddTourView> {
                                 horizontal: 10, vertical: 5),
                             child: Obx(
                               () => DropdownButton<String>(
+                                //focusColor: Colors.white,
+
                                 isExpanded: true,
                                 underline: const SizedBox(),
                                 value: tourController.selectedCategory.value,
                                 icon: const Icon(Icons.arrow_drop_down),
                                 iconSize: 24,
                                 elevation: 16,
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
                                 onChanged: (String? newValue) {
                                   tourController.selectedCategory(newValue!);
                                 },
@@ -387,9 +393,11 @@ class _AddTourViewState extends State<AddTourView> {
                                         (String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
-                                    child: Text(value,
-                                        style: const TextStyle(
-                                            color: Colors.white)),
+                                    child: Text(
+                                      value,
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    ),
                                   );
                                 }).toList(),
                               ),

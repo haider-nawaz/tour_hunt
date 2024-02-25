@@ -646,4 +646,20 @@ class TourController extends GetxController {
 
     return initalRating;
   }
+
+  Future<bool> checkIfFeedbackGiven(String tourId) async {
+    final snapshot = await ref.child('feedbacks').get();
+    bool isPresent = false;
+    if (snapshot.exists) {
+      final data = snapshot.value;
+      (data as Map<dynamic, dynamic>).forEach((key, value) {
+        if (value['tour_id'] == tourId && value['user_email'] == user!.email) {
+          isPresent = true;
+        }
+      });
+    } else {
+      print('No data available.');
+    }
+    return isPresent;
+  }
 }

@@ -247,7 +247,7 @@ class _SignupViewState extends State<SignupView> {
                                     child: Container(
                                       width: double.maxFinite,
                                       decoration: BoxDecoration(
-                                        color: Colors.purple.withOpacity(1),
+                                        color: Colors.blue.withOpacity(1),
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       height: 60,
