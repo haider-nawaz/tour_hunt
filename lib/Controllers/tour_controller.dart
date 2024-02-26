@@ -13,6 +13,8 @@ import 'dart:convert';
 
 import 'package:tour_hunt/constants.dart';
 
+import '../Models/feedback.dart';
+
 class TourController extends GetxController {
   final tours = <TourModel>[].obs;
   final bookedTours = <TourModel>[].obs;
@@ -132,17 +134,17 @@ class TourController extends GetxController {
     }
   }
 
-  void saveFeedbackOnTour(String tourId) async {
+  Future<void> saveFeedbackOnTour(FeedBack feed) async {
+    print("rating is ${feed.rating}");
     final feedbackRef = ref.child("feedbacks").push();
 
-    final data = {
-      "tour_id": tourId,
-      "description": feedBackController.text,
-      "user_email": user!.email,
-    };
-
     await feedbackRef
-        .set(data)
+        .set({
+          "user_email": feed.email,
+          "description": feed.message,
+          "rating": feed.rating,
+          "tour_id": feed.tourId,
+        })
         .then((value) => {
               Get.back(),
               customSnack("Feedback Submitted Successfully", false, "Message"),
@@ -502,8 +504,8 @@ class TourController extends GetxController {
     }
   }
 
-  Future<List<Map<String, String>>> checkForFeedback(String tourId) async {
-    final feedbacks = <Map<String, String>>[];
+  Future<List<FeedBack>> checkForFeedback(String tourId) async {
+    final feedbacks = <FeedBack>[];
     final snapshot = await ref.child('feedbacks').get();
 
     if (snapshot.exists) {
@@ -512,18 +514,17 @@ class TourController extends GetxController {
       (data as Map<dynamic, dynamic>).forEach((key, value) {
         if (value['tour_id'] == tourId) {
           feedbacks.add(
-            {
-              "description": value['description'],
-              "user_email": value['user_email'],
-            },
+            FeedBack(
+              email: value['user_email'],
+              message: value['description'],
+              rating: double.parse(value['rating'].toString()),
+              tourId: value['tour_id'],
+            ),
           );
         }
       });
-    } else {
-      print('No data available in feedbacks.');
     }
 
-    print(feedbacks);
     return feedbacks;
   }
 

@@ -2,6 +2,7 @@ import 'package:animated_rating_stars/animated_rating_stars.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tour_hunt/Models/feedback.dart';
 import 'package:tour_hunt/Views/add_tours_view.dart';
 import 'package:tour_hunt/Views/tour_detail_view.dart';
 import 'package:tour_hunt/constants.dart';
@@ -29,8 +30,9 @@ class TourWidget extends StatefulWidget {
 
 class _TourWidgetState extends State<TourWidget> {
   final isFeedbackGiven = false;
-  var feedbacks = <Map<String, String>>[];
   var feedback = "";
+
+  var feedbacks = <FeedBack>[];
   double rating = 0.0;
 
   bool isFeedbackAlreadyGiven = true;
@@ -46,16 +48,6 @@ class _TourWidgetState extends State<TourWidget> {
     });
 
     print("Feedback already given: $isFeedbackAlreadyGiven");
-  }
-
-  void getTourRating() async {
-    rating =
-        await Get.find<TourController>().getTourRating(widget.tourModel.id!);
-    setState(() {});
-  }
-
-  void updateRating(double rate) {
-    Get.find<TourController>().updateRating(widget.tourModel.id!, rate);
   }
 
   void checkIfTourIsLiked() async {
@@ -87,7 +79,7 @@ class _TourWidgetState extends State<TourWidget> {
   void initState() {
     checkIfTourIsLiked();
     checkForAnyFeedback();
-    getTourRating();
+    //getTourRating();
     checkIfFeedbackGiven();
     super.initState();
   }
@@ -328,44 +320,21 @@ class _TourWidgetState extends State<TourWidget> {
             if (showFeedback) ...[
               Column(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    width: double.infinity,
-                    color: Colors.transparent.withOpacity(.2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Rate this tour",
-                          style: TextStyle(fontSize: 16, color: Colors.black87),
-                        ),
-                        AnimatedRatingStars(
-                          initialRating: rating,
-                          minRating: 0.0,
-                          maxRating: 5.0,
-                          filledColor: Colors.amber,
-                          emptyColor: Colors.white,
-                          filledIcon: Icons.star,
-                          halfFilledIcon: Icons.star_half,
-                          emptyIcon: Icons.star_border,
-                          onChanged: (double rating) {
-                            // Handle the rating change here
-                            print('Rating: $rating');
-                            updateRating(rating);
-                          },
-                          displayRatingValue: true,
-                          interactiveTooltips: true,
-                          customFilledIcon: Icons.star,
-                          customHalfFilledIcon: Icons.star_half,
-                          customEmptyIcon: Icons.star_border,
-                          starSize: 20.0,
-                          animationDuration: const Duration(milliseconds: 300),
-                          animationCurve: Curves.easeInOut,
-                          readOnly: false,
-                        )
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   padding: const EdgeInsets.all(15),
+                  //   width: double.infinity,
+                  //   color: Colors.transparent.withOpacity(.2),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       const Text(
+                  //         "Rate this tour",
+                  //         style: TextStyle(fontSize: 16, color: Colors.black87),
+                  //       ),
+
+                  //     ],
+                  //   ),
+                  // ),
                   Container(
                     //height: 80,
                     width: double.infinity,
@@ -380,10 +349,38 @@ class _TourWidgetState extends State<TourWidget> {
                         itemBuilder: (context, index) {
                           return ListTile(
                             // leading: const Icon(Icons.feedback),
-                            title:
-                                Text(feedbacks[index]['user_email'] ?? "N/A"),
-                            subtitle:
-                                Text(feedbacks[index]['description'] ?? "N/A"),
+                            title: Row(
+                              children: [
+                                Text(feedbacks[index].email ?? "N/A"),
+                                const SizedBox(width: 10),
+                                AnimatedRatingStars(
+                                  initialRating: feedbacks[index].rating ?? 0.0,
+                                  minRating: 0.0,
+                                  maxRating: 5.0,
+                                  filledColor: Colors.amber,
+                                  emptyColor: Colors.white,
+                                  filledIcon: Icons.star,
+                                  halfFilledIcon: Icons.star_half,
+                                  emptyIcon: Icons.star_border,
+                                  onChanged: (double rating) {
+                                    // Handle the rating change here
+                                    // print('Rating: $rating');
+                                    // updateRating(rating);
+                                  },
+                                  displayRatingValue: true,
+                                  interactiveTooltips: true,
+                                  customFilledIcon: Icons.star,
+                                  customHalfFilledIcon: Icons.star_half,
+                                  customEmptyIcon: Icons.star_border,
+                                  starSize: 20.0,
+                                  animationDuration:
+                                      const Duration(milliseconds: 300),
+                                  animationCurve: Curves.easeInOut,
+                                  readOnly: true,
+                                ),
+                              ],
+                            ),
+                            subtitle: Text(feedbacks[index].message ?? "N/A"),
                           );
                         },
                       ),
@@ -405,31 +402,77 @@ class _TourWidgetState extends State<TourWidget> {
           Get.defaultDialog(
             contentPadding: const EdgeInsets.all(40),
             title: "Feedback",
-            content: TextField(
-              controller: Get.find<TourController>().feedBackController,
-              onChanged: (value) {
-                feedback = value;
-              },
-              decoration: const InputDecoration(
-                hintText: "Enter your feedback here",
-              ),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("Rate this tour:"),
+                const SizedBox(height: 10),
+                AnimatedRatingStars(
+                  initialRating: rating,
+                  minRating: 0.0,
+                  maxRating: 5.0,
+                  filledColor: Colors.amber,
+                  emptyColor: Colors.black,
+                  filledIcon: Icons.star,
+                  halfFilledIcon: Icons.star_half,
+                  emptyIcon: Icons.star_border,
+                  onChanged: (double rate) {
+                    rating = rate;
+                  },
+                  displayRatingValue: true,
+                  interactiveTooltips: true,
+                  customFilledIcon: Icons.star,
+                  customHalfFilledIcon: Icons.star_half,
+                  customEmptyIcon: Icons.star_border,
+                  starSize: 20.0,
+                  animationDuration: const Duration(milliseconds: 300),
+                  animationCurve: Curves.easeInOut,
+                  readOnly: false,
+                ),
+                const SizedBox(height: 20),
+                const Text("Give a feedback on this tour:"),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: Get.find<TourController>().feedBackController,
+                  onChanged: (value) {
+                    feedback = value;
+                  },
+                  decoration: const InputDecoration(
+                    hintText: "Enter your feedback here",
+                  ),
+                ),
+              ],
             ),
             textConfirm: "Submit",
             textCancel: "Cancel",
-            onConfirm: () {
+            onConfirm: () async {
               feedback = feedback.trim();
+
+              final feed = FeedBack(
+                email: FirebaseAuth.instance.currentUser!.email!,
+                message: feedback,
+                rating: rating,
+                tourId: widget.tourModel.id!,
+              );
 
               setState(() {
                 //add the feedback to the feedbacks list
-                feedbacks.add({
-                  "user_email": FirebaseAuth.instance.currentUser!.email!,
-                  "description": feedback,
-                });
+                feedbacks.add(
+                  FeedBack(
+                    email: FirebaseAuth.instance.currentUser!.email!,
+                    message: feedback,
+                    rating: rating,
+                    tourId: widget.tourModel.id!,
+                  ),
+                );
+
                 showFeedback = true;
               });
-              Get.find<TourController>()
-                  .saveFeedbackOnTour(widget.tourModel.id!);
+              await Get.find<TourController>().saveFeedbackOnTour(feed);
               Get.back();
+              setState(() {
+                isFeedbackAlreadyGiven = true;
+              });
             },
           );
         }
